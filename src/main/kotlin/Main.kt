@@ -10,4 +10,3 @@ fun main() {
     wordsFile.appendText("dog собака\n")
     println(wordsFile.readLines().map { it + "\n" }.joinToString(""))
 }
-
