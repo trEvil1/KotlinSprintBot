@@ -7,6 +7,7 @@ fun main() {
     wordsFile.createNewFile()
     val dictionary = mutableListOf<Word>()
     val lines: List<String> = wordsFile.readLines()
+    var answer = 0
     var word = Word("", "", 0)
 
     for (line in lines) {
@@ -16,6 +17,7 @@ fun main() {
         val translate = readln()
         if (translate == word.translate) {
             word.correctAnswer = 1
+            answer += 1
         } else word.correctAnswer = 0
         dictionary.add(word)
     }
