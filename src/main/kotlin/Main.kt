@@ -5,8 +5,19 @@ import java.io.File
 fun main() {
     val wordsFile: File = File("words.txt")
     wordsFile.createNewFile()
-    wordsFile.writeText("hello привет\n")
-    wordsFile.appendText("cat кошка\n")
-    wordsFile.appendText("dog собака\n")
-    println(wordsFile.readLines().map { it + "\n" }.joinToString(""))
+    val dictionary = mutableListOf<Word>()
+    val lines: List<String> = wordsFile.readLines()
+
+    for (line in lines) {
+        val line = line.split("|")
+        val word = Word(original = line[0], translate = line[1], line[2].toInt())
+        dictionary.add(word)
+    }
+    println(dictionary)
 }
+
+data class Word(
+    val original: String,
+    val translate: String,
+    var correctAnswerCount: Int
+)
