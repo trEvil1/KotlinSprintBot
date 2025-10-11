@@ -42,7 +42,7 @@ fun main() {
 }
 
 fun loadDictionary(): List<Word> {
-    val wordsFile: File = File("words.txt")
+    val wordsFile: File = File("words.txt" )
     val dictionary = mutableListOf<Word>()
     val lines: List<String> = wordsFile.readLines()
 
