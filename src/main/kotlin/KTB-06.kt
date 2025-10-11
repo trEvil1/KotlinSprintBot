@@ -12,7 +12,7 @@ fun main() {
             2 -> {
                 if (totalCount != 0) {
                     val learnedCount =
-                        dictionary.count { it.correctAnswerCount != null && it.correctAnswerCount!! >= 3 }
+                        dictionary.count { it.correctAnswerCount >= 3 }
                     val percent = ((learnedCount.toDouble() / totalCount) * 100).toInt()
                     println("Выучено $learnedCount из $totalCount | $percent%\n")
                 } else println("Словарь пуст")
@@ -31,9 +31,8 @@ fun loadDictionary(): List<Word> {
 
     for (line in lines) {
         val parts = line.split("|")
-        val word = Word(original = parts[0], translate = parts[1], parts[2].toIntOrNull())
+        val word = Word(original = parts[0], translate = parts[1], correctAnswerCount = parts.getOrNull(2)?.toIntOrNull() ?:0)
         dictionary.add(word)
-        println(dictionary)
     }
     return dictionary
 }
@@ -41,5 +40,5 @@ fun loadDictionary(): List<Word> {
 data class Word(
     val original: String,
     val translate: String,
-    var correctAnswerCount: Int?
+    var correctAnswerCount: Int
 )
