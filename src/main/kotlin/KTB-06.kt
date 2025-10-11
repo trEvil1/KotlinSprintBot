@@ -12,7 +12,7 @@ fun main() {
             2 -> {
                 if (totalCount != 0) {
                     val learnedCount =
-                        dictionary.count { it.correctAnswerCount >= 3 }
+                        dictionary.count { it.correctAnswerCount >= CORRECT_ANSWER_NUMBER }
                     val percent = ((learnedCount.toDouble() / totalCount) * 100).toInt()
                     println("Выучено $learnedCount из $totalCount | $percent%\n")
                 } else println("Словарь пуст")
