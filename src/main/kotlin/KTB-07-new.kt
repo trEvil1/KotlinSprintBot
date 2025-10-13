@@ -1,26 +1,23 @@
 import java.io.File
 
 const val CORRECT_ANSWER_NUMBER = 3
+const val COUNT_OF_ANSWERS = 4
 
 fun main() {
     val dictionary = loadDictionary()
-    val totalCount = dictionary.size
+
     while (true) {
         println("1 - Учить слова\n2 - Статистика\n0 - Выход\n")
         val input = readln()
+        val totalCount = dictionary.size
         when (input.toInt()) {
             1 -> {
-                val notLearnedList = mutableListOf<Word>()
-                for (i in dictionary) {
-                    if (i.correctAnswerCount != CORRECT_ANSWER_NUMBER) {
-                        notLearnedList.add(i)
-                    }
-                }
+                val notLearnedList = dictionary.filter { it.correctAnswerCount < CORRECT_ANSWER_NUMBER }
                 if (notLearnedList.isEmpty()) {
                     println("Все слова в словаре выучены")
                     return
                 }
-                val questionWords = notLearnedList.take(4).shuffled()
+                val questionWords = notLearnedList.take(COUNT_OF_ANSWERS).shuffled()
                 val correctAnswer = questionWords.random().original
                 var count = 1
                 println("$correctAnswer: ${questionWords.map { "\n${count++} - ${it.translate}" }.joinToString("")}")
@@ -56,5 +53,7 @@ fun loadDictionary(): List<Word> {
 }
 
 data class Word(
-    val original: String, val translate: String, var correctAnswerCount: Int
+    val original: String,
+    val translate: String,
+    var correctAnswerCount: Int
 )
