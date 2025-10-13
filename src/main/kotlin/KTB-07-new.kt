@@ -1,6 +1,7 @@
 import java.io.File
 
 const val CORRECT_ANSWER_NUMBER = 3
+
 fun main() {
     val dictionary = loadDictionary()
     val totalCount = dictionary.size
@@ -28,8 +29,7 @@ fun main() {
 
             2 -> {
                 if (totalCount != 0) {
-                    val learnedCount =
-                        dictionary.count { it.correctAnswerCount >= CORRECT_ANSWER_NUMBER }
+                    val learnedCount = dictionary.count { it.correctAnswerCount >= CORRECT_ANSWER_NUMBER }
                     val percent = ((learnedCount.toDouble() / totalCount) * 100).toInt()
                     println("Выучено $learnedCount из $totalCount | $percent%\n")
                 } else println("Словарь пуст")
@@ -56,7 +56,5 @@ fun loadDictionary(): List<Word> {
 }
 
 data class Word(
-    val original: String,
-    val translate: String,
-    var correctAnswerCount: Int
+    val original: String, val translate: String, var correctAnswerCount: Int
 )
