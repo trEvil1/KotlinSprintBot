@@ -1,50 +1,48 @@
 import java.io.File
+
 const val COUNT_OF_ANSWERS = 4
 const val CORRECT_ANSWER_NUMBER = 3
 
 fun main() {
-    var dictionary = loadDictionary()
+    val dictionary = loadDictionary()
 
     while (true) {
         println("1 - Учить слова\n2 - Статистика\n0 - Выход\n")
         val totalCount = dictionary.size
         val input = readln()
+        val notLearnedList = dictionary.filter { it.correctAnswerCount < CORRECT_ANSWER_NUMBER }
         when (input.toIntOrNull()) {
             1 -> {
-                val notLearnedList = dictionary.filter { it.correctAnswerCount < CORRECT_ANSWER_NUMBER }
                 if (notLearnedList.isEmpty()) {
                     println("Все слова в словаре выучены")
                     return
                 }
-                var count = 0
                 var questionWords = notLearnedList.take(COUNT_OF_ANSWERS)
-                val correctAnswer = questionWords.random().original
+                val correctWord = questionWords.random()
 
-                while ((questionWords.find { it.original == correctAnswer })?.correctAnswerCount != CORRECT_ANSWER_NUMBER) {
+                while (true) {
+                    if ((questionWords.find { it.original == correctWord.original })?.correctAnswerCount == CORRECT_ANSWER_NUMBER) {
+                        println("Слово выучено")
+                        break
+                    }
+
                     questionWords = questionWords.shuffled()
                     println(
-                        "$correctAnswer: ${
+                        "${correctWord.original}: ${
                             questionWords.map { "\n${questionWords.indexOf(it) + 1} - ${it.translate}" }
                                 .joinToString("")
                         }\n------------\n0 - Меню"
                     )
-                    val correctAnswerId = readln()
 
+                    val correctAnswerId = readln()
                     if (correctAnswerId.toInt() == 0) break
 
                     if (correctAnswerId.toIntOrNull() in 0..4) {
-                        if (correctAnswer == questionWords.get(correctAnswerId.toInt() - 1).original) {
+                        if (correctWord.original == questionWords.get(correctAnswerId.toInt() - 1).original) {
                             println("Правильно!")
-                            dictionary.map {
-                                if (it.original == correctAnswer) {
-                                    if (it.correctAnswerCount <= CORRECT_ANSWER_NUMBER) {
-                                        it.correctAnswerCount++
-                                        count++
-                                        dictionary = saveDictionary(dictionary)
-                                    }
-                                }
-                            }
-                        } else println("Не правильно $correctAnswer это ${(questionWords.find { it.original == correctAnswer })?.translate}")
+                            correctWord.correctAnswerCount++
+                            saveDictionary(dictionary)
+                        } else println("Не правильно ${correctWord.original} это ${(questionWords.find { it.original == correctWord.original })?.translate}")
                     } else println("Введите число от 0 до 4")
                 }
             }
@@ -65,7 +63,7 @@ fun main() {
 }
 
 fun loadDictionary(): List<Word> {
-    val wordsFile: File = File("words.txt" )
+    val wordsFile: File = File("words.txt")
     val dictionary = mutableListOf<Word>()
     val lines: List<String> = wordsFile.readLines()
 
@@ -89,7 +87,7 @@ data class Word(
     val original: String,
     val translate: String,
     var correctAnswerCount: Int
-){
+) {
     override fun toString(): String {
         return "$original|$translate|$correctAnswerCount"
     }
