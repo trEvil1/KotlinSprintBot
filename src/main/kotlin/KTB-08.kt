@@ -12,7 +12,9 @@ fun main() {
         val input = readln()
         val notLearnedList = dictionary.filter { it.correctAnswerCount < CORRECT_ANSWER_NUMBER }
         when (input.toIntOrNull()) {
+
             1 -> {
+
                 if (notLearnedList.isEmpty()) {
                     println("Все слова в словаре выучены")
                     return
