@@ -1,5 +1,8 @@
 import java.io.File
 
+const val COUNT_OF_ANSWERS = 4
+const val CORRECT_ANSWER_NUMBER = 3
+
 data class Statistics(
     val learnedCount: Int,
     val percent: Int,
@@ -12,9 +15,10 @@ data class Question(
 )
 
 
-class LearnWordsTrainer {
+class LearnWordsTrainer() {
     private var question: Question? = null
-    val dictionary = loadDictionary()
+    private val dictionary = loadDictionary()
+
     fun loadDictionary(): List<Word> {
         val wordsFile: File = File("words.txt")
         val dictionary = mutableListOf<Word>()
@@ -33,7 +37,7 @@ class LearnWordsTrainer {
         return dictionary
     }
 
-    fun saveDictionary(dictionary: List<Word>): List<Word> {
+    fun saveDictionary(): List<Word> {
         val wordsFile: File = File("words.txt")
         val fileList = dictionary.joinToString("\n")
         wordsFile.writeText(fileList)
@@ -43,8 +47,8 @@ class LearnWordsTrainer {
     fun getStatistics(): Statistics {
         val total = dictionary.size
         val learnedCount = dictionary.count { it.correctAnswerCount >= CORRECT_ANSWER_NUMBER }
-        val percent = ((learnedCount.toDouble() / total) * 100).toInt()
-        return Statistics(learnedCount, total, percent)
+        val percent = ((learnedCount.toDouble() * 100 / total)).toInt()
+        return Statistics(learnedCount, percent, total)
     }
 
     fun getNextQuestion(): Question? {
@@ -64,13 +68,23 @@ class LearnWordsTrainer {
             val correctAnswerId = it.variants.indexOf(it.correctAnswer)
             if (userAnswerIndex == correctAnswerId) {
                 it.correctAnswer.correctAnswerCount++
-                saveDictionary(dictionary)
+                saveDictionary()
                 println("Правильно!")
                 true
             } else {
                 false
             }
-        }?:false
+        } ?: false
 
+    }
+}
+
+data class Word(
+    val original: String,
+    val translate: String,
+    var correctAnswerCount: Int
+) {
+    override fun toString(): String {
+        return "$original|$translate|$correctAnswerCount"
     }
 }

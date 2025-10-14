@@ -1,13 +1,9 @@
-const val COUNT_OF_ANSWERS = 4
-const val CORRECT_ANSWER_NUMBER = 3
-
 fun main() {
 
     val trainer = LearnWordsTrainer()
 
     while (true) {
         println("1 - Учить слова\n2 - Статистика\n0 - Выход\n")
-        val totalCount = trainer.dictionary.size
         val input = readln()
 
         when (input.toIntOrNull()) {
@@ -35,19 +31,17 @@ fun main() {
                     val correctAnswerId = readln().toIntOrNull()
                     if (correctAnswerId == 0) break
 
-                    if (correctAnswerId in 0..4) {
+                    if (correctAnswerId in 0..COUNT_OF_ANSWERS) {
                         if (trainer.checkAnswer(correctAnswerId?.minus(1))) {
                             println("Правильно!")
                         } else println("Не правильно ${question.correctAnswer.original} это ${(question.variants.find { it.original == question.correctAnswer.original })?.translate}")
-                    } else println("Введите число от 0 до 4")
+                    } else println("Введите число от 0 до $COUNT_OF_ANSWERS")
                 }
             }
 
             2 -> {
-                if (totalCount != 0) {
-                    val statistics = trainer.getStatistics()
-                    println("Выучено ${statistics.learnedCount} из ${statistics.total} | ${statistics.percent}%\n")
-                } else println("Словарь пуст")
+                val statistics = trainer.getStatistics()
+                println("Выучено ${statistics.learnedCount} из ${statistics.total} | ${statistics.percent}%\n")
             }
 
             0 -> return
@@ -57,12 +51,3 @@ fun main() {
 }
 
 
-data class Word(
-    val original: String,
-    val translate: String,
-    var correctAnswerCount: Int
-) {
-    override fun toString(): String {
-        return "$original|$translate|$correctAnswerCount"
-    }
-}
