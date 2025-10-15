@@ -20,7 +20,6 @@ class LearnWordsTrainer() {
     private val dictionary = loadDictionary()
 
     fun loadDictionary(): List<Word> {
-        try {
             val wordsFile: File = File("words.txt")
             val dictionary = mutableListOf<Word>()
             val lines: List<String> = wordsFile.readLines()
@@ -36,9 +35,6 @@ class LearnWordsTrainer() {
                 dictionary.add(word)
             }
             return dictionary
-        } catch (e:IndexOutOfBoundsException){
-            IllegalStateException("некорректный файл")
-        }
     }
 
     fun saveDictionary(): List<Word> {
