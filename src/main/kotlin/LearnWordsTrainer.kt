@@ -20,21 +20,25 @@ class LearnWordsTrainer() {
     private val dictionary = loadDictionary()
 
     fun loadDictionary(): List<Word> {
-        val wordsFile: File = File("words.txt")
-        val dictionary = mutableListOf<Word>()
-        val lines: List<String> = wordsFile.readLines()
+        try {
+            val wordsFile: File = File("words.txt")
+            val dictionary = mutableListOf<Word>()
+            val lines: List<String> = wordsFile.readLines()
 
-        for (line in lines) {
-            val parts = line.split("|")
-            val word =
-                Word(
-                    original = parts[0],
-                    translate = parts[1],
-                    correctAnswerCount = parts.getOrNull(2)?.toIntOrNull() ?: 0
-                )
-            dictionary.add(word)
+            for (line in lines) {
+                val parts = line.split("|")
+                val word =
+                    Word(
+                        original = parts[0],
+                        translate = parts[1],
+                        correctAnswerCount = parts.getOrNull(2)?.toIntOrNull() ?: 0
+                    )
+                dictionary.add(word)
+            }
+            return dictionary
+        } catch (e:IndexOutOfBoundsException){
+            IllegalStateException("некорректный файл")
         }
-        return dictionary
     }
 
     fun saveDictionary(): List<Word> {
@@ -54,7 +58,14 @@ class LearnWordsTrainer() {
     fun getNextQuestion(): Question? {
         val notLearnedList = dictionary.filter { it.correctAnswerCount < CORRECT_ANSWER_NUMBER }
         if (notLearnedList.isEmpty()) return null
-        val questionWords = notLearnedList.take(COUNT_OF_ANSWERS).shuffled()
+        val questionWords = if (notLearnedList.size < COUNT_OF_ANSWERS) {
+            val learnedList = dictionary.filter { it.correctAnswerCount >= CORRECT_ANSWER_NUMBER }.shuffled()
+            notLearnedList.shuffled().take(COUNT_OF_ANSWERS) +
+                    learnedList.take(COUNT_OF_ANSWERS - notLearnedList.size)
+        } else {
+            notLearnedList.shuffled().take(COUNT_OF_ANSWERS)
+        }.shuffled()
+
         val correctWord = questionWords.random()
         question = Question(
             variants = questionWords,
