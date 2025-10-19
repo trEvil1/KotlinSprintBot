@@ -1,6 +1,11 @@
 fun main() {
 
-    val trainer = LearnWordsTrainer()
+    val trainer = try {
+        LearnWordsTrainer()
+    }catch (e:Exception){
+        println("Невозможно загрузить словарь")
+        return
+    }
 
     while (true) {
         println("1 - Учить слова\n2 - Статистика\n0 - Выход\n")
@@ -13,11 +18,6 @@ fun main() {
 
                     if (question == null) {
                         println("Все слова в словаре выучены")
-                        break
-                    }
-
-                    if ((question.variants.find { it.original == question.correctAnswer.original })?.correctAnswerCount == CORRECT_ANSWER_NUMBER) {
-                        println("Слово выучено")
                         break
                     }
 
