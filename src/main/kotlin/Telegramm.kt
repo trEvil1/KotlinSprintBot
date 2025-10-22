@@ -26,7 +26,6 @@ fun main(args: Array<String>) {
         val idResult:MatchResult? = lastUpdateId.find(updates)
         val idGroup = idResult?.groups
         val id = idGroup?.get(1)?.value?.toInt()
-        println(updates)
         println(id)
 
         val messageTextRegex: Regex = "\"text\":\"(.+?)\"".toRegex()
