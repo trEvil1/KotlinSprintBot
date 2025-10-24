@@ -33,7 +33,6 @@ fun main(args: Array<String>) {
         val id = idGroup?.get(1)?.value?.toInt()
         println(id)
 
-
     }
 }
 
