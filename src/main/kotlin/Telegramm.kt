@@ -23,7 +23,7 @@ fun main(args: Array<String>) {
     while (true) {
         val updates: String = getUpdates(botToken, updateId++)
         Thread.sleep(2000)
-        val lastUpdateId = "\"update_id\":(.+?),".toRegex()
+        val lastUpdateId = "\"update_id\":\\s*(\\d+),".toRegex()
         val idResult:MatchResult? = lastUpdateId.find(updates)
         val idGroup = idResult?.groups
         val id = idGroup?.get(1)?.value?.toInt()
