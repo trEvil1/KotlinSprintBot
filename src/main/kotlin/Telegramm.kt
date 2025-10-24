@@ -12,12 +12,17 @@ fun main(args: Array<String>) {
     val client: HttpClient = HttpClient.newBuilder().build()
     val requestMe: HttpRequest = HttpRequest.newBuilder().uri(URI.create(urlGetMe)).build()
     val responseMe: HttpResponse<String> = client.send(requestMe, HttpResponse.BodyHandlers.ofString())
-
+    val updates: String = getUpdates(botToken, updateId)
     println(responseMe.body())
+
+    val messageTextRegex: Regex = "\"text\":\"(.+?)\"".toRegex()
+    val matchResult:MatchResult? = messageTextRegex.find(updates)
+    val groups = matchResult?.groups
+    val text = groups?.get(1)?.value
+    println(text)
 
     while (true) {
         Thread.sleep(2000)
-        val updates: String = getUpdates(botToken, updateId)
         val startUpdateId = updates.lastIndexOf("update_id")
         val endUpdateId = updates.lastIndexOf(",\n\"message\"")
         if (startUpdateId == -1 || endUpdateId == -1) continue
@@ -28,11 +33,7 @@ fun main(args: Array<String>) {
         val id = idGroup?.get(1)?.value?.toInt()
         println(id)
 
-        val messageTextRegex: Regex = "\"text\":\"(.+?)\"".toRegex()
-        val matchResult:MatchResult? = messageTextRegex.find(updates)
-        val groups = matchResult?.groups
-        val text = groups?.get(1)?.value
-        println(text)
+
     }
 }
 
