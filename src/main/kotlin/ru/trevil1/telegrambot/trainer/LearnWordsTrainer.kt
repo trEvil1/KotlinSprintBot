@@ -1,18 +1,12 @@
+package ru.trevil1.telegrambot.trainer
+
+import ru.trevil1.telegrambot.trainer.model.Question
+import ru.trevil1.telegrambot.trainer.model.Statistics
+import ru.trevil1.telegrambot.trainer.model.Word
 import java.io.File
 
 const val COUNT_OF_ANSWERS = 4
 const val CORRECT_ANSWER_NUMBER = 3
-
-data class Statistics(
-    val learnedCount: Int,
-    val percent: Int,
-    val total: Int
-)
-
-data class Question(
-    val variants: List<Word>,
-    val correctAnswer: Word
-)
 
 
 class LearnWordsTrainer() {
@@ -20,21 +14,21 @@ class LearnWordsTrainer() {
     private val dictionary = loadDictionary()
 
     fun loadDictionary(): List<Word> {
-            val wordsFile: File = File("words.txt")
-            val dictionary = mutableListOf<Word>()
-            val lines: List<String> = wordsFile.readLines()
+        val wordsFile: File = File("words.txt")
+        val dictionary = mutableListOf<Word>()
+        val lines: List<String> = wordsFile.readLines()
 
-            for (line in lines) {
-                val parts = line.split("|")
-                val word =
-                    Word(
-                        original = parts[0],
-                        translate = parts[1],
-                        correctAnswerCount = parts.getOrNull(2)?.toIntOrNull() ?: 0
-                    )
-                dictionary.add(word)
-            }
-            return dictionary
+        for (line in lines) {
+            val parts = line.split("|")
+            val word =
+                Word(
+                    original = parts[0],
+                    translate = parts[1],
+                    correctAnswerCount = parts.getOrNull(2)?.toIntOrNull() ?: 0
+                )
+            dictionary.add(word)
+        }
+        return dictionary
     }
 
     fun saveDictionary(): List<Word> {
@@ -76,22 +70,10 @@ class LearnWordsTrainer() {
             if (userAnswerIndex == correctAnswerId) {
                 it.correctAnswer.correctAnswerCount++
                 saveDictionary()
-                println("Правильно!")
                 true
             } else {
                 false
             }
         } ?: false
-
-    }
-}
-
-data class Word(
-    val original: String,
-    val translate: String,
-    var correctAnswerCount: Int
-) {
-    override fun toString(): String {
-        return "$original|$translate|$correctAnswerCount"
     }
 }

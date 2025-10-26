@@ -1,8 +1,13 @@
+package ru.trevil1.telegrambot.console
+
+import ru.trevil1.telegrambot.trainer.COUNT_OF_ANSWERS
+import ru.trevil1.telegrambot.trainer.LearnWordsTrainer
+
 fun main() {
 
     val trainer = try {
         LearnWordsTrainer()
-    }catch (e:Exception){
+    } catch (e: Exception) {
         println("Невозможно загрузить словарь")
         return
     }
@@ -22,10 +27,11 @@ fun main() {
                     }
 
                     println(
-                        "${question.correctAnswer.original}: ${
-                            question.variants.map { "\n${question.variants.indexOf(it) + 1} - ${it.translate}" }
-                                .joinToString("")
-                        }\n------------\n0 - Меню"
+                        question.variants.joinToString(
+                            prefix = "${question.correctAnswer.original}:",
+                            separator = "\n",
+                            postfix = "\n------------\n0 - Меню"
+                        ) { "\n${question.variants.indexOf(it) + 1} - ${it.translate}" }
                     )
 
                     val correctAnswerId = readln().toIntOrNull()
@@ -34,8 +40,11 @@ fun main() {
                     if (correctAnswerId in 0..COUNT_OF_ANSWERS) {
                         if (trainer.checkAnswer(correctAnswerId?.minus(1))) {
                             println("Правильно!")
-                        } else println("Не правильно ${question.correctAnswer.original} это ${(question.variants.find { it.original == question.correctAnswer.original })?.translate}")
-                    } else println("Введите число от 0 до $COUNT_OF_ANSWERS")
+                        } else println(
+                            "Не правильно " +
+                                    "${question.correctAnswer.original} " + "это ${question.correctAnswer.translate}"
+                        )
+                    } else println("Введите число от 0 до ${COUNT_OF_ANSWERS}")
                 }
             }
 
@@ -49,5 +58,3 @@ fun main() {
         }
     }
 }
-
-
