@@ -8,21 +8,22 @@ import java.net.http.HttpResponse
 private const val TELEGRAM_API_URL = "https://api.telegram.org/bot"
 
 class TelegramBotService(val botToken: String) {
+
+    private val client = HttpClient.newBuilder().build()
+
     fun getUpdates(updateId: Int): String {
         val urlGetUpdate = "$TELEGRAM_API_URL$botToken/getUpdates?offset=$updateId"
-        val client = HttpClient.newBuilder().build()
         val requestUpdate = HttpRequest.newBuilder().uri(URI.create(urlGetUpdate)).build()
         val responseUpdate = client.send(requestUpdate, HttpResponse.BodyHandlers.ofString())
 
         return responseUpdate.body()
     }
 
-    fun sendMessage(chatId: Int, update: String): String {
+    fun sendMessage(chatId: Int, message: String): String {
         val hello = ",\"text\":\"Hello\""
-        if (hello in update) {
+        if (hello in message) {
             val text = "Hello"
             val urlSendMessage = "$TELEGRAM_API_URL$botToken/sendMessage?chat_id=$chatId&text=$text"
-            val client = HttpClient.newBuilder().build()
             val request = HttpRequest.newBuilder().uri(URI.create(urlSendMessage)).build()
             val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
