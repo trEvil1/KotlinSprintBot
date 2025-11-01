@@ -20,16 +20,11 @@ class TelegramBotService(val botToken: String) {
     }
 
     fun sendMessage(chatId: Int, message: String): String {
-        val hello = ",\"text\":\"Hello\""
-        if (hello in message) {
-            val text = "Hello"
-            val urlSendMessage = "$TELEGRAM_API_URL$botToken/sendMessage?chat_id=$chatId&text=$text"
+
+            val urlSendMessage = "$TELEGRAM_API_URL$botToken/sendMessage?chat_id=$chatId&text=$message"
             val request = HttpRequest.newBuilder().uri(URI.create(urlSendMessage)).build()
             val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
             return response.body()
-        } else {
-            return ""
-        }
     }
 }

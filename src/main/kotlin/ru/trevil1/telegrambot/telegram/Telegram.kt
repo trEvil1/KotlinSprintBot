@@ -20,7 +20,9 @@ fun main(args: Array<String>) {
         val chatId = chatIdRegex.find(updates)?.groups?.get(1)?.value?.toIntOrNull() ?: continue
         val text = messageTextRegex.find(updates)?.groups?.get(1)?.value
 
-        services.sendMessage(chatId, updates)
+        if (text == "Hello") {
+            services.sendMessage(chatId, text)
+        }
 
         println(updates)
         println(lastUpdateId)
