@@ -1,6 +1,6 @@
 package ru.trevil1.telegrambot.telegram
 
-import java.net.http.HttpClient
+import ru.trevil1.telegrambot.trainer.LearnWordsTrainer
 
 fun main(args: Array<String>) {
 
@@ -11,6 +11,9 @@ fun main(args: Array<String>) {
     val lastUpdateIdRegex = "\"update_id\":\\s*(\\d+),".toRegex()
     val messageTextRegex = "\"text\":\"(.+?)\"".toRegex()
     val chatIdRegex = ",\"chat\":\\{\"id\":(.+?),".toRegex()
+    val dataRegex = "\"data\":\"(.+?)\"".toRegex()
+
+    val trainer = LearnWordsTrainer()
 
     while (true) {
 
@@ -19,9 +22,16 @@ fun main(args: Array<String>) {
         lastUpdateId = lastUpdateIdRegex.find(updates)?.groups?.get(1)?.value?.toIntOrNull() ?: continue
         val chatId = chatIdRegex.find(updates)?.groups?.get(1)?.value?.toIntOrNull() ?: continue
         val text = messageTextRegex.find(updates)?.groups?.get(1)?.value
+        val data = dataRegex.find(updates)?.groups?.get(1)?.value
 
-        if (text == "Hello") {
-            services.sendMessage(chatId, text)
+        if (text?.lowercase() == "hello") {
+            services.sendMessage(chatId, "Hello")
+        }
+        if (text?.lowercase() == "/start") {
+            services.sendMenu(chatId)
+        }
+        if (data?.lowercase() == "statistics_clicked") {
+            services.sendMessage(chatId, "Выучено 10 из 10 | 100%")
         }
 
         println(updates)

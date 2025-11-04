@@ -1,9 +1,11 @@
 package ru.trevil1.telegrambot.telegram
 
 import java.net.URI
+import java.net.URLEncoder
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import java.nio.charset.StandardCharsets
 
 private const val TELEGRAM_API_URL = "https://api.telegram.org/bot"
 
@@ -19,12 +21,49 @@ class TelegramBotService(val botToken: String) {
         return responseUpdate.body()
     }
 
+    fun sendMenu(chatId: Int): String {
+
+        val urlSendMessage = "$TELEGRAM_API_URL$botToken/sendMessage"
+        val sendMenuBody = """
+            {
+                "chat_id": $chatId,
+                "text": "Основное меню",
+                "reply_markup": {
+                    "inline_keyboard": [
+                        [
+                            {
+                                "text": "Изучить слова",
+                                "callback_data": "learn_words_clicked"
+                            },
+                            {
+                                "text": "Статистика",
+                                "callback_data": "statistics_clicked"
+                            }
+                        ]
+                    ]
+                }
+            }
+                """.trimIndent()
+
+        val request = HttpRequest.newBuilder().uri(URI.create(urlSendMessage))
+            .header("Content-type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(sendMenuBody))
+            .build()
+        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+        return response.body()
+    }
+
     fun sendMessage(chatId: Int, message: String): String {
+        val encoded = URLEncoder.encode(
+            message,
+            StandardCharsets.UTF_8
+        )
+        println(encoded)
+        val urlSendMessage = "$TELEGRAM_API_URL$botToken/sendMessage?chat_id=$chatId&text=$encoded"
+        val request = HttpRequest.newBuilder().uri(URI.create(urlSendMessage)).build()
+        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
-            val urlSendMessage = "$TELEGRAM_API_URL$botToken/sendMessage?chat_id=$chatId&text=$message"
-            val request = HttpRequest.newBuilder().uri(URI.create(urlSendMessage)).build()
-            val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-
-            return response.body()
+        return response.body()
     }
 }
