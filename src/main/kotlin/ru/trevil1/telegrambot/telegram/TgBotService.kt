@@ -40,7 +40,7 @@ class TelegramBotService(val botToken: String) {
                             },
                             {
                                 "text": "Статистика",
-                                "callback_data": "statistics_clicked"
+                                "callback_data": $STATISTIC_CLICKED
                             }
                         ]
                     ]
