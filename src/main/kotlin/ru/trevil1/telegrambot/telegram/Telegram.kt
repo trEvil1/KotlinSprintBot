@@ -16,6 +16,7 @@ fun main(args: Array<String>) {
     val trainer = LearnWordsTrainer()
 
     while (true) {
+        val statistic = trainer.getStatistics()
 
         val updates: String = services.getUpdates(lastUpdateId + 1)
         Thread.sleep(2000)
@@ -31,7 +32,7 @@ fun main(args: Array<String>) {
             services.sendMenu(chatId)
         }
         if (data?.lowercase() == STATISTIC_CLICKED) {
-            services.sendMessage(chatId, "Выучено 10 из 10 | 100%")
+            services.sendMessage(chatId, "Выучено слов ${statistic.learnedCount} из ${statistic.total} | ${statistic.percent}%")
         }
 
         println(updates)
