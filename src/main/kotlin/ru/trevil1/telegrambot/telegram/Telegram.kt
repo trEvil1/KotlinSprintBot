@@ -27,10 +27,10 @@ fun main(args: Array<String>) {
         if (text?.lowercase() == "hello") {
             services.sendMessage(chatId, "Hello")
         }
-        if (text?.lowercase() == "/start") {
+        if (text?.lowercase() == START) {
             services.sendMenu(chatId)
         }
-        if (data?.lowercase() == "statistics_clicked") {
+        if (data?.lowercase() == STATISTIC_CLICKED) {
             services.sendMessage(chatId, "Выучено 10 из 10 | 100%")
         }
 
