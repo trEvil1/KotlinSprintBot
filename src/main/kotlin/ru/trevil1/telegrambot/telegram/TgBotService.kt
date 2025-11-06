@@ -11,6 +11,7 @@ private const val TELEGRAM_API_URL = "https://api.telegram.org/bot"
 const val LEARN_WORD_CLICKED = "learn_words_clicked"
 const val START = "/start"
 const val STATISTIC_CLICKED = "statistics_clicked"
+const val EXIT_CALLBACK = "exit_callBack"
 
 class TelegramBotService(val botToken: String) {
 
@@ -27,6 +28,7 @@ class TelegramBotService(val botToken: String) {
     fun sendMenu(chatId: Int): String {
 
         val urlSendMessage = "$TELEGRAM_API_URL$botToken/sendMessage"
+
         val sendMenuBody = """
             {
                 "chat_id": $chatId,
@@ -36,11 +38,17 @@ class TelegramBotService(val botToken: String) {
                         [
                             {
                                 "text": "Изучить слова",
-                                "callback_data": $LEARN_WORD_CLICKED
+                                "callback_data": "$LEARN_WORD_CLICKED"
                             },
                             {
                                 "text": "Статистика",
-                                "callback_data": $STATISTIC_CLICKED
+                                "callback_data": "$STATISTIC_CLICKED"
+                            }
+                        ],
+                        [
+                            {
+                                "text": "Выход",
+                                "callback_data": "$EXIT_CALLBACK"
                             }
                         ]
                     ]
