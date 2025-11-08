@@ -1,6 +1,7 @@
 package ru.trevil1.telegrambot.telegram
 
 import ru.trevil1.telegrambot.trainer.LearnWordsTrainer
+import ru.trevil1.telegrambot.trainer.model.Question
 
 fun main(args: Array<String>) {
 
@@ -17,7 +18,6 @@ fun main(args: Array<String>) {
 
     while (true) {
         val statistic = trainer.getStatistics()
-
         val updates: String = services.getUpdates(lastUpdateId + 1)
         Thread.sleep(2000)
         lastUpdateId = lastUpdateIdRegex.find(updates)?.groups?.get(1)?.value?.toIntOrNull() ?: continue
@@ -31,8 +31,14 @@ fun main(args: Array<String>) {
         if (text?.lowercase() == START) {
             services.sendMenu(chatId)
         }
+        if (data?.lowercase() == LEARN_WORD_CLICKED) {
+            services.checkNextQuestionAndSend(trainer, services, chatId)
+        }
         if (data?.lowercase() == STATISTIC_CLICKED) {
-            services.sendMessage(chatId, "Выучено слов ${statistic.learnedCount} из ${statistic.total} | ${statistic.percent}%")
+            services.sendMessage(
+                chatId,
+                "Выучено слов ${statistic.learnedCount} из ${statistic.total} | ${statistic.percent}%"
+            )
         }
 
         println(updates)
@@ -40,3 +46,4 @@ fun main(args: Array<String>) {
         println(text ?: "")
     }
 }
+
