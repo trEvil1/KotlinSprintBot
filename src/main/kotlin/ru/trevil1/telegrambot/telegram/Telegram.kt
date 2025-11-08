@@ -40,7 +40,6 @@ fun main(args: Array<String>) {
                 "Выучено слов ${statistic.learnedCount} из ${statistic.total} | ${statistic.percent}%"
             )
         }
-
         println(updates)
         println(lastUpdateId)
         println(text ?: "")

@@ -124,6 +124,7 @@ class TelegramBotService(val botToken: String) {
             "Все слова выучены",
             StandardCharsets.UTF_8
         )
+
         if (trainer.getNextQuestion() == null) {
             val urlSendDone = "$TELEGRAM_API_URL$botToken/sendMessage?chat_id=$chatId&text=$encoded"
             val request = HttpRequest.newBuilder().uri(URI.create(urlSendDone)).build()
