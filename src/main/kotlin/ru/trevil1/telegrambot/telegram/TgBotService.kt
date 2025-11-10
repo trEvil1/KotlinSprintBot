@@ -2,7 +2,6 @@ package ru.trevil1.telegrambot.telegram
 
 import ru.trevil1.telegrambot.trainer.LearnWordsTrainer
 import ru.trevil1.telegrambot.trainer.model.Question
-import ru.trevil1.telegrambot.trainer.model.Word
 import java.net.URI
 import java.net.URLEncoder
 import java.net.http.HttpClient

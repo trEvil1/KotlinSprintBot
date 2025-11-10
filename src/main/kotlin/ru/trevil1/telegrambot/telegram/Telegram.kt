@@ -1,7 +1,6 @@
 package ru.trevil1.telegrambot.telegram
 
 import ru.trevil1.telegrambot.trainer.LearnWordsTrainer
-import ru.trevil1.telegrambot.trainer.model.Question
 
 fun main(args: Array<String>) {
 
