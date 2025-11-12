@@ -8,6 +8,7 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.nio.charset.StandardCharsets
+import javax.xml.crypto.Data
 
 private const val TELEGRAM_API_URL = "https://api.telegram.org/bot"
 const val LEARN_WORD_CLICKED = "learn_words_clicked"
@@ -82,7 +83,7 @@ class TelegramBotService(val botToken: String) {
 
     fun sendQuestion(chatId: Int, question: Question): String {
 
-        val answers = question.variants.take(4)
+        val answers = question.variants.shuffled().take(4)
 
         println(answers)
         val answer = answers.mapIndexed { index, word ->
@@ -134,5 +135,34 @@ class TelegramBotService(val botToken: String) {
             chatId,
             Question(trainer.loadDictionary(), trainer.getNextQuestion()?.correctAnswer!!)
         )
+    }
+
+    fun checkAnswer(
+        trainer: LearnWordsTrainer,
+        data: String,
+        chatId: Int
+    ): String {
+        val index = data.substringAfter(CALLBACK_DATA_ANSWER_PREFIX).toInt()
+        if (trainer.checkAnswer(index)) {
+            val correct = URLEncoder.encode(
+                "Правильно!",
+                StandardCharsets.UTF_8
+            )
+            val urlSendCorrect = "$TELEGRAM_API_URL$botToken/sendMessage?chat_id=$chatId&text=$correct"
+            val request = HttpRequest.newBuilder().uri(URI.create(urlSendCorrect)).build()
+            val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+            return response.body()
+        } else {
+            val wrong = URLEncoder.encode(
+                "Неправильно!",
+                StandardCharsets.UTF_8
+            )
+            val urlSendWrong = "$TELEGRAM_API_URL$botToken/sendMessage?chat_id=$chatId&text=$wrong"
+            val request = HttpRequest.newBuilder().uri(URI.create(urlSendWrong)).build()
+            val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+            return response.body()
+        }
     }
 }
