@@ -24,9 +24,6 @@ fun main(args: Array<String>) {
         val text = messageTextRegex.find(updates)?.groups?.get(1)?.value
         val data = dataRegex.find(updates)?.groups?.get(1)?.value
 
-        if (text?.lowercase() == "hello") {
-            services.sendMessage(chatId, "Hello")
-        }
         if (text?.lowercase() == START) {
             services.sendMenu(chatId)
         }
