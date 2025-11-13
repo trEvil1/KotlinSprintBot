@@ -10,7 +10,7 @@ const val CORRECT_ANSWER_NUMBER = 3
 
 
 class LearnWordsTrainer() {
-    private var question: Question? = null
+    var question: Question? = null
     private val dictionary = loadDictionary()
 
     fun loadDictionary(): List<Word> {
@@ -56,7 +56,6 @@ class LearnWordsTrainer() {
         } else {
             notLearnedList.shuffled().take(COUNT_OF_ANSWERS)
         }.shuffled()
-
         val correctWord = questionWords.random()
         question = Question(
             variants = questionWords,

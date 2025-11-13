@@ -36,14 +36,11 @@ fun main(args: Array<String>) {
                 "Выучено слов ${statistic.learnedCount} из ${statistic.total} | ${statistic.percent}%"
             )
         }
-        if (data != null && data.lowercase().startsWith(CALLBACK_DATA_ANSWER_PREFIX)) {
 
-            services.checkAnswer(trainer, data, chatId)
-            services.checkNextQuestionAndSend(trainer, services, chatId)
-        }
+        services.checkAnswer(trainer, data, chatId)
+
         println(updates)
         println(data)
-        println(lastUpdateId)
         println(text ?: "")
     }
 }
