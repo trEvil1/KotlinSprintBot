@@ -36,9 +36,11 @@ fun main(args: Array<String>) {
                 "Выучено слов ${statistic.learnedCount} из ${statistic.total} | ${statistic.percent}%"
             )
         }
+
+        services.checkAnswer(trainer, data, chatId)
+
         println(updates)
-        println(lastUpdateId)
+        println(data)
         println(text ?: "")
     }
 }
-
