@@ -85,7 +85,7 @@ class TelegramBotService(val botToken: String) {
     fun sendQuestion(chatId: Int, question: Question?): String {
 
 
-        val answers = question?.variants?.shuffled()
+        val answers = question?.variants
         println(question?.correctAnswer)
         println(answers)
         val answer = answers?.mapIndexed { index, word ->
@@ -98,7 +98,7 @@ class TelegramBotService(val botToken: String) {
             """
             {
                 "chat_id": $chatId,
-                 "text": "${answers?.random()?.original}",
+                 "text": "${question?.correctAnswer?.original}",
                  "reply_markup": {
                      "inline_keyboard": [
                         $answer                
@@ -139,31 +139,5 @@ class TelegramBotService(val botToken: String) {
                 trainer.getNextQuestion()
             )
         }
-    }
-
-    fun checkAnswer(
-        trainer: LearnWordsTrainer,
-        data: String?,
-        chatId: Int
-    ): String {
-        if (data?.startsWith(CALLBACK_DATA_ANSWER_PREFIX) == true) {
-            val userAnswerIndex = data.substringAfter(CALLBACK_DATA_ANSWER_PREFIX).toInt()-1
-            val currentQuestion: Question? = trainer.getNextQuestion()
-            if (currentQuestion != null) {
-                println("====================")
-                println(currentQuestion)
-                val isCorrect = trainer.checkAnswer(userAnswerIndex)
-                if (isCorrect) {
-                    sendMessage(chatId, "Правильно")
-                    return checkNextQuestionAndSend(trainer, TelegramBotService(botToken), chatId)
-                } else {
-                    val correct = currentQuestion.correctAnswer.original
-                    val translate = currentQuestion.correctAnswer.translate
-                    sendMessage(chatId, "Неправильно! $correct - это $translate")
-                    return checkNextQuestionAndSend(trainer, TelegramBotService(botToken), chatId)
-                }
-            }
-        }
-    return ""
     }
 }

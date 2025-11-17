@@ -1,6 +1,7 @@
 package ru.trevil1.telegrambot.telegram
 
 import ru.trevil1.telegrambot.trainer.LearnWordsTrainer
+import ru.trevil1.telegrambot.trainer.model.Question
 
 fun main(args: Array<String>) {
 
@@ -37,10 +38,22 @@ fun main(args: Array<String>) {
             )
         }
 
-        services.checkAnswer(trainer, data, chatId)
+        if (data?.startsWith(CALLBACK_DATA_ANSWER_PREFIX) == true) {
+            val userAnswerIndex = data.substringAfter(CALLBACK_DATA_ANSWER_PREFIX).toInt() - 1
+            println(trainer.question?.correctAnswer)
+            if (trainer.question != null) {
+                val isCorrect = trainer.checkAnswer(userAnswerIndex)
 
-        println(updates)
-        println(data)
-        println(text ?: "")
+                if (isCorrect) {
+                    services.sendMessage(chatId, "Правильно!")
+                } else {
+                    val correct = trainer.question?.correctAnswer?.original
+                    val translate = trainer.question?.correctAnswer?.translate
+                    services.sendMessage(chatId, "Неправильно! $correct - это $translate")
+                }
+                services.checkNextQuestionAndSend(trainer, services, chatId)
+            }
+        }
     }
 }
+
