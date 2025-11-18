@@ -19,7 +19,7 @@ fun main() {
         when (input.toIntOrNull()) {
             1 -> {
                 while (true) {
-                    val question = trainer.getNextQuestion()
+                    val question = trainer.generateAndGetNextQuestion()
 
                     if (question == null) {
                         println("Все слова в словаре выучены")

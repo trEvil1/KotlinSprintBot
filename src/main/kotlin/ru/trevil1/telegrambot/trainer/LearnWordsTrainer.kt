@@ -45,7 +45,7 @@ class LearnWordsTrainer() {
         return Statistics(learnedCount, percent, total)
     }
 
-    fun getNextQuestion(): Question? {
+    fun generateAndGetNextQuestion(): Question? {
         val notLearnedList = dictionary.filter { it.correctAnswerCount < CORRECT_ANSWER_NUMBER }
         if (notLearnedList.isEmpty()) return null
 

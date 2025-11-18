@@ -1,7 +1,6 @@
 package ru.trevil1.telegrambot.telegram
 
 import ru.trevil1.telegrambot.trainer.LearnWordsTrainer
-import ru.trevil1.telegrambot.trainer.model.Question
 
 fun main(args: Array<String>) {
 
@@ -25,25 +24,26 @@ fun main(args: Array<String>) {
         val text = messageTextRegex.find(updates)?.groups?.get(1)?.value
         val data = dataRegex.find(updates)?.groups?.get(1)?.value
 
-        if (text?.lowercase() == START) {
-            services.sendMenu(chatId)
-        }
-        if (data?.lowercase() == LEARN_WORD_CLICKED) {
-            services.checkNextQuestionAndSend(trainer, services, chatId)
-        }
-        if (data?.lowercase() == STATISTIC_CLICKED) {
-            services.sendMessage(
-                chatId,
-                "Выучено слов ${statistic.learnedCount} из ${statistic.total} | ${statistic.percent}%"
-            )
-        }
+        when {
+            text?.lowercase() == START -> {
+                services.sendMenu(chatId)
+            }
 
-        if (data?.startsWith(CALLBACK_DATA_ANSWER_PREFIX) == true) {
-            val userAnswerIndex = data.substringAfter(CALLBACK_DATA_ANSWER_PREFIX).toInt() - 1
-            println(trainer.question?.correctAnswer)
-            if (trainer.question != null) {
+            data?.lowercase() == LEARN_WORD_CLICKED -> {
+                checkNextQuestionAndSend(trainer, services, chatId)
+            }
+
+            data?.lowercase() == STATISTIC_CLICKED -> {
+                services.sendMessage(
+                    chatId,
+                    "Выучено слов ${statistic.learnedCount} из ${statistic.total} | ${statistic.percent}%"
+                )
+            }
+
+            data?.startsWith(CALLBACK_DATA_ANSWER_PREFIX) == true -> {
+                val userAnswerIndex = data.substringAfter(CALLBACK_DATA_ANSWER_PREFIX).toInt() - 1
+                println(trainer.question?.correctAnswer)
                 val isCorrect = trainer.checkAnswer(userAnswerIndex)
-
                 if (isCorrect) {
                     services.sendMessage(chatId, "Правильно!")
                 } else {
@@ -51,9 +51,28 @@ fun main(args: Array<String>) {
                     val translate = trainer.question?.correctAnswer?.translate
                     services.sendMessage(chatId, "Неправильно! $correct - это $translate")
                 }
-                services.checkNextQuestionAndSend(trainer, services, chatId)
+                checkNextQuestionAndSend(trainer, services, chatId)
             }
         }
+    }
+}
+
+fun checkNextQuestionAndSend(
+    trainer: LearnWordsTrainer,
+    telegramBotService: TelegramBotService,
+    chatId: Int
+) {
+    val question = trainer.generateAndGetNextQuestion()
+    if (question == null) {
+        telegramBotService.sendMessage(
+            chatId = chatId,
+            message = "Все слова выучены"
+        )
+    } else {
+        telegramBotService.sendQuestion(
+            chatId = chatId,
+            question = question
+        )
     }
 }
 
