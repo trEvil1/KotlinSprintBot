@@ -23,6 +23,7 @@ data class Message(
     @SerialName("text")
     val text: String
 )
+
 @Serializable
 data class CallbackQuery(
     @SerialName("data")
@@ -30,7 +31,7 @@ data class CallbackQuery(
 )
 
 fun main() {
-    val json = Json{
+    val json = Json {
         ignoreUnknownKeys = true
     }
 
