@@ -10,7 +10,7 @@ fun main(args: Array<String>) {
 
     val lastUpdateIdRegex = "\"update_id\":\\s*(\\d+),".toRegex()
     val messageTextRegex = "\"text\":\"(.+?)\"".toRegex()
-    val chatIdRegex = ",\"chat\":\\{\"id\":(.+?),".toRegex()
+    val chatIdRegex = ",\"chat\":\\{\"id\":(-*.+?),".toRegex()
     val dataRegex = "\"data\":\"(.+?)\"".toRegex()
 
     val trainer = LearnWordsTrainer()
