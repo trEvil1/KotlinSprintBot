@@ -9,12 +9,16 @@ const val COUNT_OF_ANSWERS = 4
 const val CORRECT_ANSWER_NUMBER = 3
 
 
-class LearnWordsTrainer() {
+class LearnWordsTrainer(string: String) {
+    private val fileName: String = "words.txt"
     var question: Question? = null
     private val dictionary = loadDictionary()
 
     fun loadDictionary(): List<Word> {
-        val wordsFile: File = File("words.txt")
+        val wordsFile: File = File(fileName)
+        if (!wordsFile.exists()){
+            File("word.txt").copyTo(wordsFile)
+        }
         val dictionary = mutableListOf<Word>()
         val lines: List<String> = wordsFile.readLines()
 
@@ -32,7 +36,7 @@ class LearnWordsTrainer() {
     }
 
     fun saveDictionary(): List<Word> {
-        val wordsFile: File = File("words.txt")
+        val wordsFile: File = File(fileName)
         val fileList = dictionary.joinToString("\n")
         wordsFile.writeText(fileList)
         return dictionary
