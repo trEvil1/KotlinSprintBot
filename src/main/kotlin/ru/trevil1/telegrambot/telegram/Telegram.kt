@@ -41,19 +41,15 @@ fun main(args: Array<String>) {
 
     var lastUpdateId = 0L
 
-    val json = Json {
-        ignoreUnknownKeys = true
-    }
 
     val trainer = LearnWordsTrainer()
-
+    val statistic = trainer.getStatistics()
     while (true) {
         Thread.sleep(2000)
-        val statistic = trainer.getStatistics()
         val responseString: String = services.getUpdates(lastUpdateId)
         println(responseString)
 
-        val response: Response = json.decodeFromString(responseString)
+        val response: Response = services.json.decodeFromString(responseString)
         val updates = response.result
         val firstUpdate = updates.firstOrNull() ?: continue
         val updateId = firstUpdate.updateId
@@ -66,7 +62,7 @@ fun main(args: Array<String>) {
 
         when {
             text?.lowercase() == START -> {
-                services.sendMenu(json, chatId)
+                services.sendMenu(chatId)
             }
 
             data?.lowercase() == LEARN_WORD_CLICKED -> {
@@ -75,7 +71,7 @@ fun main(args: Array<String>) {
 
             data?.lowercase() == STATISTIC_CLICKED -> {
                 services.sendMessage(
-                    json, chatId, "Выучено слов ${statistic.learnedCount} из ${statistic.total} | ${statistic.percent}%"
+                    chatId, "Выучено слов ${statistic.learnedCount} из ${statistic.total} | ${statistic.percent}%"
                 )
             }
 
@@ -85,11 +81,11 @@ fun main(args: Array<String>) {
                 println(trainer.question?.correctAnswer)
                 val isCorrect = trainer.checkAnswer(userAnswerIndex)
                 if (isCorrect) {
-                    services.sendMessage(json, chatId, "Правильно!")
+                    services.sendMessage(chatId, "Правильно!")
                 } else {
                     val correct = trainer.question?.correctAnswer?.original
                     val translate = trainer.question?.correctAnswer?.translate
-                    services.sendMessage(json, chatId, "Неправильно! $correct - это $translate")
+                    services.sendMessage(chatId, "Неправильно! $correct - это $translate")
                 }
                 checkNextQuestionAndSend(trainer, services, chatId)
             }
@@ -106,11 +102,11 @@ fun checkNextQuestionAndSend(
     val question = trainer.generateAndGetNextQuestion()
     if (question == null) {
         telegramBotService.sendMessage(
-            chatId = chatId, message = "Все слова выучены", json = json
+            chatId = chatId, message = "Все слова выучены",
         )
     } else {
         telegramBotService.sendQuestion(
-            chatId = chatId, question = question, json = json
+            chatId = chatId, question = question,
         )
     }
 }
