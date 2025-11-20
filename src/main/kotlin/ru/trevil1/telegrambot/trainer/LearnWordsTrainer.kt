@@ -10,13 +10,13 @@ const val CORRECT_ANSWER_NUMBER = 3
 
 
 class LearnWordsTrainer(string: String) {
-    private val fileName: String = "words.txt"
+    private val fileName = String()
     var question: Question? = null
     private val dictionary = loadDictionary()
 
     fun loadDictionary(): List<Word> {
         val wordsFile: File = File(fileName)
-        if (!wordsFile.exists()){
+        if (!wordsFile.exists()) {
             File("word.txt").copyTo(wordsFile)
         }
         val dictionary = mutableListOf<Word>()
@@ -79,5 +79,10 @@ class LearnWordsTrainer(string: String) {
                 false
             }
         } ?: false
+    }
+
+    fun resetProgress() {
+        dictionary.forEach { it.correctAnswerCount = 0 }
+        saveDictionary()
     }
 }

@@ -19,8 +19,8 @@ data class Response(
 
 @Serializable
 data class Message(
-    @SerialName("text") val text: String,
-    @SerialName("chat") val chat: Chat,
+    @SerialName("text") val text: String? = null,
+    @SerialName("chat") val chat: Chat?,
 )
 
 @Serializable
@@ -55,12 +55,17 @@ fun main(args: Array<String>) {
     }
 }
 
-fun handleUpdates(update: Update, json: Json, services: TelegramBotService, trainers: HashMap<Long, LearnWordsTrainer>) {
+fun handleUpdates(
+    update: Update,
+    json: Json,
+    services: TelegramBotService,
+    trainers: HashMap<Long, LearnWordsTrainer>
+) {
     val chatId: Long = update.message?.chat?.id ?: update.callbackQuery?.message?.chat?.id ?: return
     val text = update.message?.text
     val data = update.callbackQuery?.data
 
-    val trainer = trainers.getOrPut(chatId ){ LearnWordsTrainer("$chatId.txt") }
+    val trainer = trainers.getOrPut(chatId) { LearnWordsTrainer("$chatId.txt") }
 
     when {
         text?.lowercase() == START -> {
@@ -90,6 +95,11 @@ fun handleUpdates(update: Update, json: Json, services: TelegramBotService, trai
                 services.sendMessage(chatId, "Неправильно! $correct - это $translate")
             }
             checkNextQuestionAndSend(trainer, services, chatId)
+        }
+
+        data?.lowercase() == RESET_CLICKED -> {
+            trainer.resetProgress()
+            services.sendMessage(chatId, "Прогресс сброшен")
         }
     }
 }
