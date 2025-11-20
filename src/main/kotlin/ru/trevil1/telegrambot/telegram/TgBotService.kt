@@ -33,6 +33,7 @@ const val START = "/start"
 const val STATISTIC_CLICKED = "statistics_clicked"
 const val EXIT_CALLBACK = "exit_callBack"
 const val CALLBACK_DATA_ANSWER_PREFIX = "answer_"
+const val RESET_CLICKED = "reset_clicked"
 
 class TelegramBotService(val botToken: String) {
     private val client = HttpClient.newBuilder().build()
@@ -60,6 +61,9 @@ class TelegramBotService(val botToken: String) {
                     listOf(
                         InlineKeyBoard(callbackData = LEARN_WORD_CLICKED, text = "Изучать слова"),
                         InlineKeyBoard(callbackData = STATISTIC_CLICKED, text = "Статистика"),
+                    ),
+                    listOf(
+                        InlineKeyBoard(callbackData = RESET_CLICKED, text = "Сбросить прогресс"),
                     )
                 )
             )

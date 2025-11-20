@@ -6,7 +6,7 @@ import ru.trevil1.telegrambot.trainer.LearnWordsTrainer
 fun main() {
 
     val trainer = try {
-        LearnWordsTrainer()
+        LearnWordsTrainer("words.txt")
     } catch (e: Exception) {
         println("Невозможно загрузить словарь: $e")
         return
@@ -44,7 +44,7 @@ fun main() {
                             "Не правильно " +
                                     "${question.correctAnswer.original} " + "это ${question.correctAnswer.translate}"
                         )
-                    } else println("Введите число от 0 до ${COUNT_OF_ANSWERS}")
+                    } else println("Введите число от 0 до $COUNT_OF_ANSWERS")
                 }
             }
 
