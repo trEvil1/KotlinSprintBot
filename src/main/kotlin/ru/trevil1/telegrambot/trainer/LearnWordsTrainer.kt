@@ -10,7 +10,7 @@ const val CORRECT_ANSWER_NUMBER = 3
 
 
 class LearnWordsTrainer(string: String) {
-    private val fileName = String()
+    private val fileName = string
     var question: Question? = null
     private val dictionary = loadDictionary()
 
